@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  username     String    @unique
+  email        String    @unique
+  avatar       String?
+  name         String
+  passwordHash String
+  Channel      Channel[] @relation(fields: [channelIds], references: [id])
+  channelIds   String[]  @db.ObjectId
+  sent         Message[] @relation("to")
+  received     Message[] @relation("from")
+  channelId    String?   @db.ObjectId
+}
+
+model Channel {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  name    String    @unique
+  users   User[]    @relation(fields: [userIds], references: [id])
+  userIds String[]  @db.ObjectId
+  Message Message[]
+}
+
+model Message {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  text         String
+  to           User?    @relation("to", fields: [toUsername], references: [username])
+  from         User     @relation("from", fields: [fromUsername], references: [username])
+  toUsername   String?
+  fromUsername String
+  time         DateTime @default(now())
+  toChannel    Channel? @relation(fields: [channelName], references: [name])
+  channelName  String?
+}
