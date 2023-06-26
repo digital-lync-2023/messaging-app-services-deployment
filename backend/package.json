@@ -23,8 +23,8 @@
     "zod": "^3.19.1"
   },
   "scripts": {
-    "start": "npm run db-migrations && npm run seed && node src/index.js",
-    "db-migrations": "prisma migrate deploy",
+    "start": "npm run db-migrations && node src/index.js",
+    "db-migrations": "prisma generate",
     "dev": "ts-node-dev --respawn --transpile-only --exit-child src/index.ts",
     "test": "jest",
     "build": "tsc",
