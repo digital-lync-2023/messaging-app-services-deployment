@@ -4,7 +4,6 @@ import { SafeUser } from "../src/types";
 import { compareSync, hash } from "bcryptjs";
 import { pick } from "./util";
 import { sendEmail } from "./emails";
-import logger from "./logger";
 import { z } from "zod";
 import { EmailSchema } from "./zod-schemas";
 
@@ -52,7 +51,6 @@ export async function sendPasswordResetLink(email: string) {
       text: link,
     });
   } catch (error) {
-    logger.fatal(error);
     throw new Error("Failed to email password reset link");
   }
 }
@@ -78,7 +76,6 @@ export function getAuthTokenPayload(token: string): jwt.JwtPayload | null {
     const payload = jwt.verify(token, config.JWT_SECRET) as JwtPayload;
     return payload;
   } catch (error) {
-    logger.info(error);
     return null;
   }
 }
